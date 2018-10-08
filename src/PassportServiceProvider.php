@@ -222,7 +222,7 @@ class PassportServiceProvider extends ServiceProvider
     {
 		$publicKeyPath = 'file://'.Passport::keyPath('oauth-public.key');
 		$publicKey = new CryptKey($publicKeyPath, null, false);
-        $this->app->singleton(ResourceServer::class, function () {
+        $this->app->singleton(ResourceServer::class, function () use($publicKey){
             return new ResourceServer(
                 $this->app->make(Bridge\AccessTokenRepository::class),
                 $publicKey
