@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Request;
 use Laravel\Passport\Guards\TokenGuard;
 use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\ResourceServer;
+use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
@@ -195,14 +196,16 @@ class PassportServiceProvider extends ServiceProvider
      */
     public function makeAuthorizationServer()
     {
+		$keyPath = 'file://'.Passport::keyPath('oauth-private.key');
+		$privateKey = new CryptKey($keyPath, null, false);
         $server = new AuthorizationServer(
             $this->app->make(Bridge\ClientRepository::class),
             $this->app->make(Bridge\AccessTokenRepository::class),
             $this->app->make(Bridge\ScopeRepository::class),
-            'file://'.Passport::keyPath('oauth-private.key'),
+            $privateKey,
             'file://'.Passport::keyPath('oauth-public.key')
         );
-        
+
         $server->setEncryptionKey(app('encrypter')->getKey());
 
         return $server;
