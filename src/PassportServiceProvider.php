@@ -197,13 +197,15 @@ class PassportServiceProvider extends ServiceProvider
     public function makeAuthorizationServer()
     {
 		$keyPath = 'file://'.Passport::keyPath('oauth-private.key');
+		$publicKeyPath = 'file://'.Passport::keyPath('oauth-public.key');
 		$privateKey = new CryptKey($keyPath, null, false);
+		$publicKey = new CryptKey($publicKeyPath, null, false);
         $server = new AuthorizationServer(
             $this->app->make(Bridge\ClientRepository::class),
             $this->app->make(Bridge\AccessTokenRepository::class),
             $this->app->make(Bridge\ScopeRepository::class),
             $privateKey,
-            'file://'.Passport::keyPath('oauth-public.key')
+            $publicKey
         );
 
         $server->setEncryptionKey(app('encrypter')->getKey());
