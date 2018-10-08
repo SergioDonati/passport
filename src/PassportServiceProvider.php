@@ -220,10 +220,12 @@ class PassportServiceProvider extends ServiceProvider
      */
     protected function registerResourceServer()
     {
+		$publicKeyPath = 'file://'.Passport::keyPath('oauth-public.key');
+		$publicKey = new CryptKey($publicKeyPath, null, false);
         $this->app->singleton(ResourceServer::class, function () {
             return new ResourceServer(
                 $this->app->make(Bridge\AccessTokenRepository::class),
-                'file://'.Passport::keyPath('oauth-public.key')
+                $publicKey
             );
         });
     }
